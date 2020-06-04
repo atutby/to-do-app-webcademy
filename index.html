@@ -28,7 +28,7 @@
 
 		<!-- List of tasks -->
 		<div class="card mb-4">
-			<ul class="list-group list-group-flush">
+			<ul class="list-group list-group-flush" id="tasks-list">
 				<li class="list-group-item d-flex justify-content-between">
 					<span class="task-title">Купить молоко</span>
 					<button type="button" data-action="delete-task" class="btn btn-light align-self-end">Удалить</button>
@@ -36,16 +36,6 @@
 
 				<!-- <li class="list-group-item d-flex justify-content-between">
 					<span class="task-title">Сходить в спортзал</span>
-					<button type="button" data-action="delete-task" class="btn btn-light align-self-end">Удалить</button>
-				</li>
-
-				<li class="list-group-item d-flex justify-content-between">
-					<span class="task-title">Пройти урок по веб-разработке</span>
-					<button type="button" data-action="delete-task" class="btn btn-light align-self-end">Удалить</button>
-				</li>
-
-				<li class="list-group-item d-flex justify-content-between">
-					<span class="task-title">Прийти на вебинар</span>
 					<button type="button" data-action="delete-task" class="btn btn-light align-self-end">Удалить</button>
 				</li> -->
 				
@@ -59,15 +49,15 @@
 		<div class="card bg-light" >
 			<div class="card-header">Добавить новую задачу</div>
 			<div class="card-body">
-		<form>
-			<div class="form-group">
-				<input type="text" class="form-control" id="addNewTask" placeholder="Текст задачи" required>
-				<small id="emailHelp" class="form-text text-muted">Что делаем, сколько времени тратим, какой результат получаем.</small>
-			</div>
-			
-			
-			<button type="submit" class="btn btn-primary  btn-lg active">Добавить</button>
-		</form>
+			<form id="new-task-form">
+				<div class="form-group">
+					<input type="text" class="form-control" id="addNewTask" placeholder="Текст задачи" required>
+					<small id="emailHelp" class="form-text text-muted">Что делаем, сколько времени тратим, какой результат получаем.</small>
+				</div>
+				
+				
+				<button type="submit" class="btn btn-primary  btn-lg active">Добавить</button>
+			</form>
 			</div>
 			</div>
 		<!-- //Form add new task -->
@@ -75,12 +65,6 @@
 
 	</div>
 
-
-
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
