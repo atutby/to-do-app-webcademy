@@ -1,3 +1,7 @@
+const EMPTY_ALERT = 'На сегодня нет ни одной задачи!';
+const ADDED_ALERT = 'Задача добавлена!';
+const DELETED_ALERT = 'Задача удалена!';
+
 const addingForm = document.querySelector('#new-task-form');
 const tasksContainer = document.querySelector('.mb-4');
 const tasksList = document.querySelector('#tasks-list');
@@ -29,23 +33,34 @@ const createTaskTemplate = (content) => {
   );
 };
 
-const createEmptyTemplate = () => {
+const createAlertTemplate = (text, color) => {
   return(
-    `<div class="alert alert-dark" role="alert">
-    На сегодня нет ни одной задачи!
+    `<div class="alert alert-${color}" role="alert">
+    ${text}
     </div>`
   );
 };
 
-const insertEmptyTask = () => {
-  const empty = createEmptyTemplate();
+const makeAlert = (type) => {
+  switch(type) {
+    case 'empty':
+      return createAlertTemplate(EMPTY_ALERT, 'dark');
+    case 'added':
+      return createAlertTemplate(ADDED_ALERT, 'warning');
+    case 'deleted':
+      return createAlertTemplate(DELETED_ALERT, 'danger');
+  }
+};
+
+const insertAlert = (type) => {
+  const empty = makeAlert('empty');
     tasksContainer.insertAdjacentHTML('beforebegin', empty);
 };
 
 const checkNoTasks = () => {
   const allTasks = document.querySelectorAll('.list-group-item ');
   if (allTasks.length === 0) {
-    insertEmptyTask();
+    insertAlert('empty');
   }
 };
 
@@ -73,8 +88,9 @@ addingForm.addEventListener('submit', (evt) => {
   const inputField = addingForm.querySelector('#addNewTask');
   const content = inputField.value;
   const newTask = createTaskTemplate(content);
-  deleteEmptyTemplate();
+  deleteEmptyTemplate(); 
   addNewTask(newTask);
+  // insertAlert('added');
   inputField.value = '';
 });
 
@@ -84,5 +100,6 @@ tasksList.addEventListener('click', (evt) => {
     const id = element.parentElement.id;
     deleteTask(id);
     checkNoTasks();
+    // insertAlert('deleted');
   }
 });
