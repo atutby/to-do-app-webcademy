@@ -46,28 +46,35 @@ const makeAlert = (type) => {
     case 'empty':
       return createAlertTemplate(EMPTY_ALERT, 'dark');
     case 'added':
-      return createAlertTemplate(ADDED_ALERT, 'warning');
+      return createAlertTemplate(ADDED_ALERT, 'success');
     case 'deleted':
       return createAlertTemplate(DELETED_ALERT, 'danger');
   }
 };
 
 const insertAlert = (type) => {
-  const empty = makeAlert('empty');
+  const empty = makeAlert(type);
     tasksContainer.insertAdjacentHTML('beforebegin', empty);
 };
 
-const checkNoTasks = () => {
-  const allTasks = document.querySelectorAll('.list-group-item ');
-  if (allTasks.length === 0) {
-    insertAlert('empty');
+function removeElement(elementClass) {
+  let elements = document.getElementsByClassName(elementClass);
+  while (elements.length) {
+    elements[0].parentNode.removeChild(elements[0]);
   }
 };
 
-const deleteEmptyTemplate = () => {
-  const empty = document.querySelector('.alert-dark');
-  if (empty) {
-    empty.remove();
+const deleteAlerts = () => {
+  const alerts = document.getElementsByClassName('alert');
+  while (alerts.length) {
+    alerts[0].parentNode.removeChild(alerts[0]);
+  }
+};
+
+const checkNoTasks = () => {
+  const allTasks = document.getElementsByClassName('list-group-item');
+  if (allTasks.length === 0) {
+    insertAlert('empty');
   }
 };
 
@@ -77,7 +84,7 @@ const addNewTask = (task) => {
 
 const deleteTask = (id) => {
   const task = document.getElementById(id);
-  task.remove();
+  task.parentNode.removeChild(task);
 };
 
 todaysDate();
@@ -85,21 +92,28 @@ checkNoTasks();
 
 addingForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
+  deleteAlerts(); 
   const inputField = addingForm.querySelector('#addNewTask');
   const content = inputField.value;
   const newTask = createTaskTemplate(content);
-  deleteEmptyTemplate(); 
   addNewTask(newTask);
-  // insertAlert('added');
   inputField.value = '';
+  insertAlert('added');
+  setTimeout(() => {
+    deleteAlerts()
+  }, 1000);
 });
 
 tasksList.addEventListener('click', (evt) => {
   const element = evt.target;
+  deleteAlerts();
   if (element.getAttribute('data-action') === 'delete-task') {
     const id = element.parentElement.id;
     deleteTask(id);
-    checkNoTasks();
-    // insertAlert('deleted');
+    insertAlert('deleted');
+    setTimeout(() => {
+      deleteAlerts();
+      checkNoTasks();
+    }, 1000);
   }
 });
