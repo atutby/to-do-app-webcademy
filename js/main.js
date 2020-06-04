@@ -1,9 +1,15 @@
 const addingForm = document.querySelector('#new-task-form');
 const tasksContainer = document.querySelector('.mb-4');
 const tasksList = document.querySelector('#tasks-list');
+const datePlace = document.querySelector('.mb-5');
 
 const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
+};
+
+const todaysDate = () => {
+  const today = new Date();
+  datePlace.insertAdjacentHTML('beforeend', `, ${today}`);
 };
 
 const makeDeleteButton = () => {
@@ -59,6 +65,7 @@ const deleteTask = (id) => {
   task.remove();
 };
 
+todaysDate();
 checkNoTasks();
 
 addingForm.addEventListener('submit', (evt) => {
