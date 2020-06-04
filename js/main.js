@@ -1,6 +1,7 @@
 const EMPTY_ALERT = 'На сегодня нет ни одной задачи!';
 const ADDED_ALERT = 'Задача добавлена!';
 const DELETED_ALERT = 'Задача удалена!';
+const DELAY = 1000;
 
 const addingForm = document.querySelector('#new-task-form');
 const tasksContainer = document.querySelector('.mb-4');
@@ -27,7 +28,7 @@ const createTaskTemplate = (content) => {
   const id = getRandomNumber(0, 1000);
   return (
     `<li class="list-group-item d-flex justify-content-between" id="task${id}">
-    <span class="task-title">${content}</span>
+    <span class="task-title" contenteditable="true">${content}</span>
     ${deleteButton}
     </li>`
   );
@@ -101,7 +102,7 @@ addingForm.addEventListener('submit', (evt) => {
   insertAlert('added');
   setTimeout(() => {
     deleteAlerts()
-  }, 1000);
+  }, DELAY);
 });
 
 tasksList.addEventListener('click', (evt) => {
@@ -114,6 +115,6 @@ tasksList.addEventListener('click', (evt) => {
     setTimeout(() => {
       deleteAlerts();
       checkNoTasks();
-    }, 1000);
+    }, DELAY);
   }
 });
