@@ -7,6 +7,9 @@ const addingForm = document.querySelector('#new-task-form');
 const tasksContainer = document.querySelector('.mb-4');
 const tasksList = document.querySelector('#tasks-list');
 const datePlace = document.querySelector('.mb-5');
+const inputField = document.querySelector('#add-new-task');
+
+let tasks = [];
 
 const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -23,15 +26,34 @@ const makeDeleteButton = () => {
   );
 };
 
-const createTaskTemplate = (content) => {
-  const deleteButton = makeDeleteButton();
+const createNewTask = (content) => {
   const id = getRandomNumber(0, 1000);
+  return {
+    content,
+    id
+  };
+};
+
+const createTaskTemplate = (task) => {
+  // const {content, id} = task;
+  const deleteButton = makeDeleteButton();
   return (
-    `<li class="list-group-item d-flex justify-content-between" id="task${id}">
-    <span class="task-title" contenteditable="true">${content}</span>
-    ${deleteButton}
+    `<li class="list-group-item d-flex justify-content-between" id="task${task.id}">
+      <span class="task-title" contenteditable="true">${task.content}</span>
+      ${deleteButton}
     </li>`
   );
+};
+
+const insertNewTask = (task) => {
+  tasksList.insertAdjacentHTML('afterbegin', task);
+};
+  
+const deleteTask = (id) => {
+  const index = tasks.findIndex((item) => item.id === id);
+  tasks.splice(index, 1);
+  const taskToDelete = document.getElementById(id);
+  task.parentNode.removeChild(taskToDelete);
 };
 
 const createAlertTemplate = (text, color) => {
@@ -79,25 +101,17 @@ const checkNoTasks = () => {
   }
 };
 
-const addNewTask = (task) => {
-  tasksList.insertAdjacentHTML('afterbegin', task);
-};
-
-const deleteTask = (id) => {
-  const task = document.getElementById(id);
-  task.parentNode.removeChild(task);
-};
-
 todaysDate();
 checkNoTasks();
 
 addingForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  deleteAlerts(); 
-  const inputField = addingForm.querySelector('#addNewTask');
+  deleteAlerts();
   const content = inputField.value;
-  const newTask = createTaskTemplate(content);
-  addNewTask(newTask);
+  const newTask = createNewTask(content);
+  tasks.push(newTask);
+  const newTaskMarkup = createTaskTemplate(newTask);
+  insertNewTask(newTaskMarkup);
   inputField.value = '';
   insertAlert('added');
   setTimeout(() => {
