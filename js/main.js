@@ -9,8 +9,6 @@ const tasksList = document.querySelector('#tasks-list');
 const datePlace = document.querySelector('.mb-5');
 const inputField = document.querySelector('#add-new-task');
 
-let tasks = [];
-
 const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -35,7 +33,6 @@ const createNewTask = (content) => {
 };
 
 const createTaskTemplate = (task) => {
-  // const {content, id} = task;
   const deleteButton = makeDeleteButton();
   return (
     `<li class="list-group-item d-flex justify-content-between" id="task${task.id}">
@@ -48,12 +45,19 @@ const createTaskTemplate = (task) => {
 const insertNewTask = (task) => {
   tasksList.insertAdjacentHTML('afterbegin', task);
 };
+
+const renderAllTasks = (tasks) => {
+  tasks.forEach((item) => {
+    const taskMarkup = createTaskTemplate(item);
+    insertNewTask(taskMarkup);
+  });
+};
   
 const deleteTask = (id) => {
   const index = tasks.findIndex((item) => item.id === id);
   tasks.splice(index, 1);
   const taskToDelete = document.getElementById(id);
-  task.parentNode.removeChild(taskToDelete);
+  taskToDelete.parentNode.removeChild(taskToDelete);
 };
 
 const createAlertTemplate = (text, color) => {
@@ -94,15 +98,22 @@ const deleteAlerts = () => {
   }
 };
 
-const checkNoTasks = () => {
-  const allTasks = document.getElementsByClassName('list-group-item');
-  if (allTasks.length === 0) {
+const checkTasks = (tasks) => {
+  if (tasks.length === 0) {
     insertAlert('empty');
+  } else {
+    renderAllTasks(tasks);
   }
 };
 
+let tasks = [];
+if (localStorage.getItem('tasks')) {
+  tasks = JSON.parse(localStorage.getItem('tasks'));
+  checkTasks(tasks);
+}
+
 todaysDate();
-checkNoTasks();
+
 
 addingForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -110,6 +121,7 @@ addingForm.addEventListener('submit', (evt) => {
   const content = inputField.value;
   const newTask = createNewTask(content);
   tasks.push(newTask);
+  localStorage.setItem('tasks', JSON.stringify(tasks));
   const newTaskMarkup = createTaskTemplate(newTask);
   insertNewTask(newTaskMarkup);
   inputField.value = '';
@@ -128,7 +140,7 @@ tasksList.addEventListener('click', (evt) => {
     insertAlert('deleted');
     setTimeout(() => {
       deleteAlerts();
-      checkNoTasks();
+      checkTasks(tasks);
     }, DELAY);
   }
 });
