@@ -1,12 +1,13 @@
 const EMPTY_ALERT = 'На сегодня нет ни одной задачи!';
 const ADDED_ALERT = 'Задача добавлена!';
 const DELETED_ALERT = 'Задача удалена!';
-const DELAY = 1000;
+const DELAY = 2000;
 
 const addingForm = document.querySelector('#new-task-form');
-const tasksContainer = document.querySelector('.mb-4');
+const tasksContainer = document.querySelector('.tasks-container');
 const tasksList = document.querySelector('#tasks-list');
-const datePlace = document.querySelector('.mb-5');
+const datePlace = document.querySelector('.subtitle');
+const counterPlace = document.querySelector('.counter');
 const inputField = document.querySelector('#add-new-task');
 
 const getRandomNumber = (min, max) => {
@@ -15,7 +16,18 @@ const getRandomNumber = (min, max) => {
 
 const todaysDate = () => {
   const today = new Date();
-  datePlace.insertAdjacentHTML('beforeend', `, ${today}`);
+  const formatted = `${today.getDate()}.${today.getMonth() + 1}.${today.getFullYear()}`;
+  datePlace.insertAdjacentHTML('beforeend', `, ${formatted}`);
+};
+
+const countTasks = (tasks) => {
+  const sum = tasks.length;
+  counterPlace.innerHTML = ``;
+  if (sum > 0) {
+    counterPlace.innerHTML = sum;
+  } else {
+    counterPlace.innerHTML = 0;
+  }
 };
 
 const makeDeleteButton = () => {
@@ -47,17 +59,19 @@ const insertNewTask = (task) => {
 };
 
 const renderAllTasks = (tasks) => {
+  tasksList.innerHTML = ``;
   tasks.forEach((item) => {
     const taskMarkup = createTaskTemplate(item);
     insertNewTask(taskMarkup);
   });
 };
   
-const deleteTask = (id) => {
-  const index = tasks.findIndex((item) => item.id === id);
-  tasks.splice(index, 1);
-  const taskToDelete = document.getElementById(id);
-  taskToDelete.parentNode.removeChild(taskToDelete);
+const deleteTaskFromTasks = (id) => {
+  const numeralId = parseInt(id.slice(4), 10);
+  const newTasks = tasks.filter((item) => item.id !== numeralId);
+  updateData(newTasks);
+  tasks = JSON.parse(localStorage.getItem('tasks'));
+  return tasks;
 };
 
 const createAlertTemplate = (text, color) => {
@@ -101,19 +115,25 @@ const deleteAlerts = () => {
 const checkTasks = (tasks) => {
   if (tasks.length === 0) {
     insertAlert('empty');
-  } else {
-    renderAllTasks(tasks);
   }
 };
 
+const updateData = (newData) => {
+  localStorage.clear();
+  localStorage.setItem('tasks', JSON.stringify(newData));
+  return localStorage;
+};
+
 let tasks = [];
+
 if (localStorage.getItem('tasks')) {
   tasks = JSON.parse(localStorage.getItem('tasks'));
+  renderAllTasks(tasks);
   checkTasks(tasks);
 }
 
 todaysDate();
-
+countTasks(tasks);
 
 addingForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -123,7 +143,8 @@ addingForm.addEventListener('submit', (evt) => {
   tasks.push(newTask);
   localStorage.setItem('tasks', JSON.stringify(tasks));
   const newTaskMarkup = createTaskTemplate(newTask);
-  insertNewTask(newTaskMarkup);
+  renderAllTasks(tasks);
+  countTasks(tasks);
   inputField.value = '';
   insertAlert('added');
   setTimeout(() => {
@@ -136,7 +157,9 @@ tasksList.addEventListener('click', (evt) => {
   deleteAlerts();
   if (element.getAttribute('data-action') === 'delete-task') {
     const id = element.parentElement.id;
-    deleteTask(id);
+    tasks = deleteTaskFromTasks(id);
+    renderAllTasks(tasks);
+    countTasks(tasks);
     insertAlert('deleted');
     setTimeout(() => {
       deleteAlerts();
